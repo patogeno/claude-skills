@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Spec — Handoff Skill</title>
+<style>/* superpowers-html · canonical artifact stylesheet
+   Light/dark aware · zero dependencies · inline into each artifact's <style>. */
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg-primary:#f5f5f7;--bg-secondary:#fff;--bg-tertiary:#e9e9ec;--border:#d1d1d6;
+  --text-primary:#1d1d1f;--text-secondary:#6e6e73;--text-tertiary:#aeaeb2;
+  --accent:#0071e3;--success:#34c759;--warning:#ff9f0a;--error:#ff3b30;--purple:#bf5af2;--code-bg:#f6f8fa;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg-primary:#1d1d1f;--bg-secondary:#2d2d2f;--bg-tertiary:#3a3a3c;--border:#424245;
+  --text-primary:#f5f5f7;--text-secondary:#a1a1a6;--text-tertiary:#636366;--accent:#0a84ff;--code-bg:#161618;}}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-primary);
+  color:var(--text-primary);line-height:1.6;}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh;}
+.sidebar{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:var(--bg-secondary);
+  border-right:1px solid var(--border);padding:1.5rem 1rem;}
+.sidebar .doc-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);font-weight:700;}
+.sidebar h1{font-size:1.05rem;font-weight:650;margin:.3rem 0 .8rem;line-height:1.3;}
+.toc a{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--text-secondary);
+  font-size:.84rem;padding:.36rem .5rem;border-radius:6px;}
+.toc a:hover,.toc a.active{background:var(--bg-tertiary);color:var(--text-primary);}
+.toc .num{color:var(--text-tertiary);font-variant-numeric:tabular-nums;margin-right:.4rem;}
+.progress{background:var(--bg-tertiary);border-radius:8px;padding:.75rem;margin-bottom:1.1rem;}
+.progress .bar{height:6px;background:var(--bg-primary);border-radius:99px;overflow:hidden;margin-bottom:.5rem;}
+.progress .fill{height:100%;background:var(--success);}
+.progress .pct{font-size:.78rem;color:var(--text-secondary);}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;border:2px solid var(--text-tertiary);}
+.dot.done{background:var(--success);border-color:var(--success);}
+.dot.active{background:var(--accent);border-color:var(--accent);}
+.main{padding:2.5rem 3rem;max-width:880px;}
+.lede{font-size:1.05rem;color:var(--text-secondary);margin-bottom:1.5rem;}
+h2{font-size:1.35rem;font-weight:660;margin:2.4rem 0 .9rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);scroll-margin-top:1rem;}
+h2:first-of-type{margin-top:0;}
+h3{font-size:1.02rem;font-weight:620;margin:1.3rem 0 .5rem;}
+p{margin-bottom:.9rem;}ul,ol{margin:.3rem 0 1rem 1.4rem;}li{margin-bottom:.35rem;}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;background:var(--code-bg);padding:.1rem .35rem;border-radius:5px;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;overflow-x:auto;
+  font-family:ui-monospace,Menlo,monospace;font-size:.8rem;line-height:1.55;margin:.6rem 0 1.1rem;}
+pre code{background:none;padding:0;}
+.callout{border-left:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent);
+  border-radius:0 8px 8px 0;padding:.8rem 1.1rem;margin:1.1rem 0;font-size:.92rem;}
+.callout.warn{border-color:var(--warning);background:color-mix(in srgb,var(--warning) 11%,transparent);}
+.callout .h{font-weight:650;display:block;margin-bottom:.2rem;}
+table{width:100%;border-collapse:collapse;margin:1rem 0 1.3rem;font-size:.9rem;}
+th,td{text-align:left;padding:.55rem .8rem;border-bottom:1px solid var(--border);vertical-align:top;}
+th{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary);}
+tbody tr:hover{background:var(--bg-secondary);}
+td code{color:var(--accent);}
+.pill{font-size:.68rem;font-weight:650;padding:.14rem .5rem;border-radius:99px;white-space:nowrap;}
+.pill.ok{color:var(--success);background:color-mix(in srgb,var(--success) 16%,transparent);}
+.pill.warn{color:var(--warning);background:color-mix(in srgb,var(--warning) 16%,transparent);}
+.pill.muted{color:var(--text-secondary);background:var(--bg-tertiary);}
+.fig{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:1.4rem;margin:1.2rem 0;}
+.fig-cap{font-size:.74rem;color:var(--text-secondary);text-align:center;margin-top:.7rem;}
+.nlabel{fill:var(--text-primary);font:600 12.5px system-ui;text-anchor:middle;}
+.nsub{fill:var(--text-secondary);font:10px system-ui;text-anchor:middle;}
+.edge{stroke:var(--text-tertiary);stroke-width:1.4;fill:none;}
+.meta-head{border-bottom:1px solid var(--border);padding-bottom:1.5rem;margin-bottom:2rem;}
+.meta-row{display:grid;grid-template-columns:120px 1fr;gap:1rem;font-size:.92rem;margin-bottom:.5rem;}
+.meta-row .k{color:var(--text-secondary);font-weight:600;}
+details.task{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;margin-bottom:1rem;overflow:hidden;}
+details.task[open]{box-shadow:0 2px 10px rgba(0,0,0,.05);}
+summary{list-style:none;cursor:pointer;padding:1rem 1.25rem;display:flex;align-items:center;gap:.85rem;}
+summary::-webkit-details-marker{display:none;}
+summary .tnum{font-size:.72rem;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:.15rem .5rem;border-radius:99px;}
+summary h3{font-size:1.05rem;font-weight:620;flex:1;margin:0;}
+.badge{font-size:.68rem;font-weight:600;padding:.18rem .55rem;border-radius:99px;text-transform:uppercase;letter-spacing:.03em;}
+.badge.done{color:var(--success);background:color-mix(in srgb,var(--success) 15%,transparent);}
+.badge.todo{color:var(--text-secondary);background:var(--bg-tertiary);}
+.task-body{padding:0 1.25rem 1.25rem;border-top:1px solid var(--border);}
+.step{display:flex;gap:.7rem;padding:.55rem 0;align-items:flex-start;font-size:.9rem;}
+.step .cb{width:16px;height:16px;border:2px solid var(--text-tertiary);border-radius:4px;flex-shrink:0;margin-top:.18rem;}
+.step.checked .cb{background:var(--success);border-color:var(--success);}
+.step.checked .txt{color:var(--text-secondary);text-decoration:line-through;}
+@media (max-width:780px){.layout{grid-template-columns:1fr;}.sidebar{position:static;height:auto;}.main{padding:1.5rem;}}
+</style>
+</head>
+<body class="layout">
+<nav class="sidebar">
+  <div class="doc-label">Design Spec</div>
+  <h1>Handoff Skill &amp; claude-skills plugin scaffold</h1>
+  <div class="toc">
+    <a href="#problem"><span class="num">1</span>Problem</a>
+    <a href="#layout"><span class="num">2</span>Repository layout</a>
+    <a href="#procedure"><span class="num">3</span>Skill procedure</a>
+    <a href="#classification"><span class="num">4</span>Classification model</a>
+    <a href="#contract"><span class="num">5</span>Handoff file contract</a>
+    <a href="#verification"><span class="num">6</span>Verification &amp; exit</a>
+    <a href="#constraints"><span class="num">7</span>Public-repo constraints</a>
+    <a href="#scope"><span class="num">8</span>Out of scope</a>
+  </div>
+</nav>
+<main class="main">
+
+<div class="meta-head">
+  <div class="meta-row"><span class="k">Date</span><span>2026-08-08</span></div>
+  <div class="meta-row"><span class="k">Repository</span><span><code>claude-skills</code> — public, generic, project-agnostic</span></div>
+  <div class="meta-row"><span class="k">Deliverable</span><span>Plugin scaffold + one skill: <code>handoff</code></span></div>
+</div>
+
+<p class="lede">A skill that ends a work session by flushing durable knowledge into the project's own documents, then writing one small handoff file that lets the next Claude Code session resume from a one-line prompt.</p>
+
+<h2 id="problem">1. Problem</h2>
+
+<p>Multi-session work loses context at the session boundary. The naive fix — a fat "state dump" file — fails twice over: it duplicates what the plan and spec already say, so the two drift apart and the next session cannot tell which is authoritative; and it buries the handful of facts that <em>only</em> existed in the ended session's context.</p>
+
+<p>The handoff file should therefore be defined by <strong>exclusion</strong>: it carries only what no document in the project already carries. Everything else it references by path and section.</p>
+
+<div class="callout">
+  <span class="h">Success criterion</span>
+  The next session is started with one short prompt — <code>Read docs/handoffs/handoff-&lt;topic&gt;.md and continue.</code> — and needs no further explanation from the user to take the correct next action.
+</div>
+
+<h2 id="layout">2. Repository layout</h2>
+
+<p>The repo is distributed as a Claude Code plugin marketplace, so installation is one command and updates arrive with <code>git pull</code>. A single plugin holds many skills; <code>handoff</code> is the first.</p>
+
+<pre><code>claude-skills/
+├─ .claude-plugin/
+│  ├─ marketplace.json     # marketplace metadata + plugin list
+│  └─ plugin.json          # plugin name, version, description
+├─ skills/
+│  └─ handoff/
+│     └─ SKILL.md
+├─ docs/
+│  └─ superpowers/specs/   # design specs for the skills in this repo
+├─ README.md               # install + repo conventions
+├─ LICENSE                 # MIT
+└─ .gitignore</code></pre>
+
+<table>
+  <thead><tr><th>Identifier</th><th>Value</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Marketplace</td><td><code>patogeno-claude-skills</code></td><td>Namespaced to the owner; distinct from the plugin name.</td></tr>
+    <tr><td>Plugin</td><td><code>dev-skills</code></td><td>Generic enough for the repo to grow past one skill.</td></tr>
+    <tr><td>Skill</td><td><code>handoff</code></td><td>Makes <code>/handoff</code> resolve directly; <code>/dev-skills:handoff</code> is the unambiguous fallback.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="procedure">3. Skill procedure</h2>
+
+<p>The skill is a six-step checklist. The invoking session creates one todo per step and completes them in order. Steps 3 and 4 are the substance; the rest bound them.</p>
+
+<div class="fig">
+<svg viewBox="0 0 860 320" width="100%" role="img" aria-label="Session knowledge is classified into three destinations: working documents, the handoff file, or dropped. The next session reads the handoff and the documents it points to.">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--text-tertiary)"/>
+    </marker>
+  </defs>
+
+  <path class="edge" marker-end="url(#ar)" d="M160,160 H196"/>
+  <path class="edge" marker-end="url(#ar)" d="M330,160 C356,160 356,68 376,68"/>
+  <path class="edge" marker-end="url(#ar)" d="M330,160 H376"/>
+  <path class="edge" marker-end="url(#ar)" d="M330,160 C356,160 356,252 376,252" stroke-dasharray="4 4"/>
+  <path class="edge" marker-end="url(#ar)" d="M570,68 C610,68 610,160 646,160"/>
+  <path class="edge" marker-end="url(#ar)" d="M570,160 H646"/>
+
+  <rect x="20" y="132" width="140" height="56" rx="10" fill="var(--bg-tertiary)" stroke="var(--border)"/>
+  <text class="nlabel" x="90" y="156">Ending session</text>
+  <text class="nsub" x="90" y="172">everything it knows</text>
+
+  <rect x="200" y="132" width="130" height="56" rx="10" fill="var(--bg-tertiary)" stroke="var(--border)"/>
+  <text class="nlabel" x="265" y="156">Classify</text>
+  <text class="nsub" x="265" y="172">fact by fact</text>
+
+  <rect x="380" y="40" width="190" height="56" rx="10" fill="var(--bg-secondary)" stroke="var(--success)"/>
+  <text class="nlabel" x="475" y="64">Working documents</text>
+  <text class="nsub" x="475" y="80">durable — plan, spec, CLAUDE.md</text>
+
+  <rect x="380" y="132" width="190" height="56" rx="10" fill="var(--bg-secondary)" stroke="var(--accent)" stroke-width="2"/>
+  <text class="nlabel" x="475" y="156">handoff-&lt;topic&gt;.md</text>
+  <text class="nsub" x="475" y="172">session-only — one living file</text>
+
+  <rect x="380" y="224" width="190" height="56" rx="10" fill="var(--bg-secondary)" stroke="var(--border)" stroke-dasharray="4 4"/>
+  <text class="nlabel" x="475" y="248">Dropped</text>
+  <text class="nsub" x="475" y="264">noise — already written, or dead weight</text>
+
+  <rect x="650" y="132" width="180" height="56" rx="10" fill="var(--bg-tertiary)" stroke="var(--border)"/>
+  <text class="nlabel" x="740" y="156">Next session</text>
+  <text class="nsub" x="740" y="172">one-line prompt</text>
+</svg>
+<div class="fig-cap">Every fact the ending session holds goes to exactly one of three destinations. Nothing is written twice.</div>
+</div>
+
+<table>
+  <thead><tr><th>#</th><th>Step</th><th>Output</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Inventory working documents</td><td>The plan, spec, notes, <code>CLAUDE.md</code>, README that actually exist in this project — with paths.</td></tr>
+    <tr><td>2</td><td>Classify session knowledge</td><td>Each fact tagged durable / session-only / noise per §4.</td></tr>
+    <tr><td>3</td><td>Flush durable knowledge</td><td>Edits applied to the owning documents. If a durable fact has no owning document, <strong>create the document</strong> rather than parking the fact in the handoff.</td></tr>
+    <tr><td>4</td><td>Write the handoff</td><td><code>docs/handoffs/handoff-&lt;topic&gt;.md</code>, rewritten in place if it exists.</td></tr>
+    <tr><td>5</td><td>Redundancy verification</td><td>Restated lines deleted and replaced by references; empty sections removed.</td></tr>
+    <tr><td>6</td><td>Emit the resume prompt</td><td>One line the user copies into the next session.</td></tr>
+  </tbody>
+</table>
+
+<h3>Topic and path resolution</h3>
+<p>The topic is derived, in order of preference, from: an argument the user passed to the skill, the plan document being executed, the branch name, or the dominant subject of the session. Handoffs live in <code>docs/handoffs/</code>; if the project has no <code>docs/</code> directory the skill creates it rather than falling back to a cluttered project root. One living file per topic — successive sessions rewrite it, and git history preserves prior versions.</p>
+
+<h2 id="classification">4. Classification model</h2>
+
+<p>This table is the skill's core judgement. It is reproduced in <code>SKILL.md</code> as the reference the session consults during step 2.</p>
+
+<table>
+  <thead><tr><th>Knowledge from the session</th><th>Destination</th><th>Kind</th></tr></thead>
+  <tbody>
+    <tr><td>Task completion status; what is in progress</td><td>plan / todo document</td><td><span class="pill ok">durable</span></td></tr>
+    <tr><td>A decision and its rationale</td><td>spec, or the plan's decisions section</td><td><span class="pill ok">durable</span></td></tr>
+    <tr><td>A constraint discovered about the codebase</td><td>the document covering that area (create if missing)</td><td><span class="pill ok">durable</span></td></tr>
+    <tr><td>A repeatable command or setup step</td><td><code>CLAUDE.md</code> or README</td><td><span class="pill ok">durable</span></td></tr>
+    <tr><td>A project convention</td><td><code>CLAUDE.md</code></td><td><span class="pill ok">durable</span></td></tr>
+    <tr><td>A standing user preference</td><td><code>CLAUDE.md</code></td><td><span class="pill ok">durable</span></td></tr>
+    <tr><td>Dead end — approach tried and why it failed</td><td>handoff (unless permanent, then the relevant document)</td><td><span class="pill warn">session-only</span></td></tr>
+    <tr><td>Right-now environment state — branch, uncommitted work, running server, seeded data</td><td>handoff</td><td><span class="pill warn">session-only</span></td></tr>
+    <tr><td>What to do next, and in what order</td><td>handoff, as a pointer into the plan</td><td><span class="pill warn">session-only</span></td></tr>
+    <tr><td>Anything already written in any document</td><td>nowhere — reference it by path and section</td><td><span class="pill muted">noise</span></td></tr>
+  </tbody>
+</table>
+
+<div class="callout warn">
+  <span class="h">The rule that keeps the handoff small</span>
+  A durable fact with no home does not become a handoff bullet. It becomes a document — a new plan file, a new spec section, a new <code>CLAUDE.md</code> line. The handoff is not a landfill for homeless knowledge.
+</div>
+
+<h2 id="contract">5. Handoff file contract</h2>
+
+<p>Markdown, because the next session reads it as an instruction. Every section is droppable: an empty section is deleted, never filled with a placeholder.</p>
+
+<pre><code># Handoff: &lt;topic&gt;
+
+**Goal:** &lt;the outcome that ends this multi-session effort&gt;
+**Status:** &lt;where the work actually stands, 1–2 sentences&gt;
+
+## Start here
+1. Read &lt;path&gt; §&lt;section&gt; — &lt;why&gt;
+2. &lt;first concrete action&gt;
+
+## Orientation
+| Document | Holds | Read when |
+
+## Not written anywhere else
+&lt;facts that exist in no document — delete ruthlessly&gt;
+
+## Do not
+- &lt;what wastes the next session's time or breaks something&gt;
+
+## Open questions for the user
+
+## Environment
+&lt;only if non-obvious&gt;</code></pre>
+
+<table>
+  <thead><tr><th>Section</th><th>Purpose</th><th>Droppable</th></tr></thead>
+  <tbody>
+    <tr><td>Goal / Status</td><td>Orients in two lines; the only permitted restatement, and only in compressed form.</td><td>No</td></tr>
+    <tr><td>Start here</td><td>The next session's first two moves, concrete enough to act on with zero memory.</td><td>No</td></tr>
+    <tr><td>Orientation</td><td>Map of which document answers which question — replaces restating them.</td><td>Yes, if there is one document</td></tr>
+    <tr><td>Not written anywhere else</td><td>The genuine payload: dead ends, discarded approaches, warnings.</td><td>Yes</td></tr>
+    <tr><td>Do not</td><td>Actions that would waste time or break state.</td><td>Yes</td></tr>
+    <tr><td>Open questions</td><td>Decisions blocked on the user.</td><td>Yes</td></tr>
+    <tr><td>Environment</td><td>Non-obvious machine state the next session would otherwise rediscover.</td><td>Yes</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Size limit:</strong> under 80 lines. Exceeding it is a signal that durable knowledge is being duplicated instead of flushed, not a signal to raise the limit.</p>
+
+<h2 id="verification">6. Verification &amp; exit</h2>
+
+<p>Step 5 asks two questions of the drafted file:</p>
+
+<ol>
+  <li><strong>Per line:</strong> is this already stated in a working document? If yes, delete it and, if the next session needs to know it exists, replace it with a path-and-section reference.</li>
+  <li><strong>Of "Start here":</strong> could a session with zero memory of this conversation act on step 1 immediately? If not, make it concrete.</li>
+</ol>
+
+<p>Step 6 prints the resume prompt as a copyable line and nothing else:</p>
+
+<pre><code>Read docs/handoffs/handoff-&lt;topic&gt;.md and continue.</code></pre>
+
+<h2 id="constraints">7. Public-repo constraints</h2>
+
+<p>The repository is public and its skills must work in anyone's project. These are repo conventions, stated in the README and applied to every skill added later.</p>
+
+<table>
+  <thead><tr><th>Constraint</th><th>Applies to</th></tr></thead>
+  <tbody>
+    <tr><td>No absolute paths, drive letters, or home directories</td><td>every <code>SKILL.md</code></td></tr>
+    <tr><td>No usernames, company names, or project names</td><td>every file in the repo</td></tr>
+    <tr><td>No secrets, tokens, hostnames, or internal URLs</td><td>every file in the repo</td></tr>
+    <tr><td>No assumption that a given directory exists — state the fallback</td><td>skill procedures that write files</td></tr>
+    <tr><td>No OS-specific shell syntax in skill instructions</td><td>every <code>SKILL.md</code></td></tr>
+  </tbody>
+</table>
+
+<p>The generated handoff file lives in the <em>consuming</em> project, not here, so its contents are that project's concern. The skill nonetheless warns against copying secrets or credentials into it, since handoffs are often committed.</p>
+
+<h2 id="scope">8. Out of scope</h2>
+
+<ul>
+  <li><strong>A receiving-side skill.</strong> The handoff file is self-directing; no second skill is needed to consume it.</li>
+  <li><strong>Automatic invocation at session end.</strong> The user runs <code>/handoff</code> deliberately.</li>
+  <li><strong>Multi-topic handoffs.</strong> One topic per file; run the skill twice for two parallel efforts.</li>
+  <li><strong>Archiving or pruning old handoffs.</strong> Rewriting one living file makes git the history.</li>
+  <li><strong>Additional skills.</strong> This spec covers the scaffold and <code>handoff</code> only.</li>
+</ul>
+
+</main>
+</body>
+</html>
