@@ -1,0 +1,20 @@
+{
+  "name": "patogeno-claude-skills",
+  "owner": {
+    "name": "patogeno",
+    "url": "https://github.com/patogeno"
+  },
+  "metadata": {
+    "description": "Generic, reusable Claude Code skills for software development.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "dev-skills",
+      "source": "./",
+      "description": "Project-agnostic Claude Code skills for development workflows. Includes: handoff.",
+      "category": "workflow",
+      "keywords": ["skills", "workflow", "handoff"]
+    }
+  ]
+}

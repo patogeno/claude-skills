@@ -1,0 +1,13 @@
+{
+  "name": "dev-skills",
+  "description": "Project-agnostic Claude Code skills for development workflows.",
+  "version": "0.1.0",
+  "author": {
+    "name": "patogeno",
+    "url": "https://github.com/patogeno"
+  },
+  "homepage": "https://github.com/patogeno/claude-skills",
+  "repository": "https://github.com/patogeno/claude-skills",
+  "license": "MIT",
+  "keywords": ["skills", "workflow", "handoff"]
+}
