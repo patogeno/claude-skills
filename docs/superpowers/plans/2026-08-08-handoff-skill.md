@@ -230,7 +230,8 @@ One line: never copy credentials, tokens, or API keys into the handoff file — 
 Run:
 
 ```bash
-grep -nEi "C:\\\\|D:\\\\|/home/|/Users/|patri|patosoto|powershell|Get-ChildItem" skills/handoff/SKILL.md
+grep -nEi "C:\\\\|D:\\\\|/home/|/Users/|powershell|Get-ChildItem" skills/handoff/SKILL.md
+grep -nFf .git-private-terms skills/handoff/SKILL.md   # local, untracked list of your own identifiers
 ```
 
 Expected: no output. Any hit is a Global Constraints violation — fix it before committing.
@@ -289,7 +290,8 @@ Reproduce the Global Constraints of this plan as repo conventions, framed as rul
 Run:
 
 ```bash
-grep -nEi "C:\\\\|D:\\\\|/home/|/Users/|patri|patosoto|@gmail" README.md
+grep -nEi "C:\\\\|D:\\\\|/home/|/Users/|@gmail|@outlook" README.md
+grep -nFf .git-private-terms README.md   # local, untracked list of your own identifiers
 ```
 
 Expected: no output.
