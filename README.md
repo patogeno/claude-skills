@@ -24,6 +24,7 @@ Update later with:
 | Skill | Invoke | Purpose |
 |---|---|---|
 | `handoff` | `/handoff` | Hand work off to the next Claude Code session with a minimal, non-redundant handoff file. |
+| `compact-check` | `/compact-check` | Decide whether *this* session can be `/compact`ed safely, and get the `/compact` line to paste. |
 
 ## `handoff`
 
@@ -44,6 +45,40 @@ One living file per topic, rewritten each session. Under 80 lines — if it grow
 ```
 Read docs/handoffs/handoff-auth-refactor.md and continue.
 ```
+
+## `compact-check`
+
+For long sessions you want to keep going. `handoff` prepares a *new* session; `compact-check` answers "is it safe to `/compact` *this* one now?"
+
+**1. Run it** when the context is filling up, or when the hook below suggests it:
+
+```
+/compact-check
+```
+
+**2. It flushes durable knowledge, then tests sufficiency.** Decisions, conventions and plan progress go into the documents that own them (`CLAUDE.md`, the plan, the spec, auto memory). Then it asks: could a session holding only the files that reload after compaction carry on without re-asking you anything?
+
+**3. It gives a verdict.** Either `NOT YET`, naming what blocks it (an unanswered question, a half-finished edit), or `GO` with a line to paste:
+
+```
+/compact Task 5 of docs/plan.md next: add --dry-run ... Re-read first: docs/plan.md, CLAUDE.md, src/importer.py.
+```
+
+Claude cannot run `/compact` itself; you paste the line.
+
+### Bundled hooks
+
+Installing the plugin also enables three hooks (`hooks/hooks.json`, all run with `node`):
+
+| Event | What it does |
+|---|---|
+| `UserPromptSubmit` | Estimates context use from the last main-thread assistant turn in the transcript. The first time it passes 60%, and again at 80%, it adds a one-line reminder for Claude to suggest `/compact-check` at the next natural break. Silent otherwise, and on any error. |
+| `SessionStart` (`compact`) | After compaction, tells Claude to re-read `MEMORY.md`, run `git status`, and re-open any plan or handoff file the summary mentions. Re-arms the 60%/80% reminders. |
+| `PostCompact` | Appends each compaction summary, with a timestamp, to `claude-compact-check/compact-summaries.log` in the OS temp directory, so you can audit what was kept. |
+
+The context window defaults to 200k tokens. For a 1M-context model, set `COMPACT_CHECK_WINDOW=1000000` in your environment or in the `env` block of your Claude Code settings.
+
+The estimate reads token usage out of the session transcript. That transcript format is internal to Claude Code and not a documented interface, so a future release could break it. If that happens, the hook stays silent rather than failing.
 
 ## Conventions for skills in this repo
 

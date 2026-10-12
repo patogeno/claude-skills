@@ -6,15 +6,15 @@
   },
   "metadata": {
     "description": "Generic, reusable Claude Code skills for software development.",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {
       "name": "dev-skills",
       "source": "./",
-      "description": "Project-agnostic Claude Code skills for development workflows. Includes: handoff.",
+      "description": "Project-agnostic Claude Code skills for development workflows. Includes: handoff, compact-check.",
       "category": "workflow",
-      "keywords": ["skills", "workflow", "handoff"]
+      "keywords": ["skills", "workflow", "handoff", "compact", "context"]
     }
   ]
 }
