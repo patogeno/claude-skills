@@ -1,6 +1,6 @@
 ---
 name: compact-check
-description: Use when the user asks whether this session can be compacted - on "/compact-check", "is it ok to compact", "can I compact", "safe to compact", "should I compact now", or when a [compact-check] hook reminder says the context is filling up. Answers for the current session, which continues after /compact; for handing work to a new session, use handoff instead.
+description: Use when the user asks whether this session can be compacted - on "/compact-check", "is it ok to compact", "can I compact", "safe to compact", "should I compact now". Answers for the current session, which continues after /compact; for handing work to a new session, use handoff instead.
 ---
 
 # Checking Whether It Is Safe to Compact

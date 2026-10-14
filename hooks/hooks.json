@@ -1,18 +1,6 @@
 {
-  "description": "compact-check: nudge at 60% and 80% of the context window, restore orientation after compaction, log compaction summaries.",
+  "description": "compact-check: restore orientation after compaction, log compaction summaries.",
   "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/compact-check.js", "prompt"],
-            "timeout": 5
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "matcher": "compact",
