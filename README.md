@@ -72,11 +72,19 @@ Installing the plugin also enables three hooks (`hooks/hooks.json`, all run with
 
 | Event | What it does |
 |---|---|
-| `UserPromptSubmit` | Estimates context use from the last main-thread assistant turn in the transcript. The first time it passes 60%, and again at 80%, it adds a one-line reminder for Claude to suggest `/compact-check` at the next natural break. Silent otherwise, and on any error. |
+| `UserPromptSubmit` | Measures context use the way `/context` does: the input, cache and output tokens of the last main-thread assistant turn in the transcript, or the post-compaction size if a compaction came after that turn. The first time it passes 60% of the context window, and again at 80%, it adds a one-line reminder for Claude to suggest `/compact-check` at the next natural break. Silent otherwise, and on any error. |
 | `SessionStart` (`compact`) | After compaction, tells Claude to re-read `MEMORY.md`, run `git status`, and re-open any plan or handoff file the summary mentions. Re-arms the 60%/80% reminders. |
 | `PostCompact` | Appends each compaction summary, with a timestamp, to `claude-compact-check/compact-summaries.log` in the OS temp directory, so you can audit what was kept. |
 
-The context window defaults to 200k tokens. For a 1M-context model, set `COMPACT_CHECK_WINDOW=1000000` in your environment or in the `env` block of your Claude Code settings.
+Hooks are not told the model or its context window, so the hook does not assume one. It takes the window from the first source it finds:
+
+1. The latest `/context` output in the session (`163.6k/1m tokens (16%)` means a 1M window). Once seen, the window is remembered for the rest of the session, through compactions.
+2. `ANTHROPIC_MODEL`, if it names a `[1m]` model.
+3. `COMPACT_CHECK_WINDOW_TOKENS` (for example `200000` or `1000000`), set in your environment or in the `env` block of your Claude Code settings. The older name `COMPACT_CHECK_WINDOW` still works.
+
+With no window known, there is no percentage. Once the context passes 120k tokens, the hook adds a single note with the raw token count and tells Claude not to suggest compacting on that alone. Run `/context` once, or set the variable, to get the 60%/80% reminders.
+
+Tests: `node --test tests/`.
 
 The estimate reads token usage out of the session transcript. That transcript format is internal to Claude Code and not a documented interface, so a future release could break it. If that happens, the hook stays silent rather than failing.
 

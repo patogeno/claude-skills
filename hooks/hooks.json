@@ -1,5 +1,5 @@
 {
-  "description": "compact-check: nudge at 60% and 80% context use, restore orientation after compaction, log compaction summaries.",
+  "description": "compact-check: nudge at 60% and 80% of the context window, restore orientation after compaction, log compaction summaries.",
   "hooks": {
     "UserPromptSubmit": [
       {
