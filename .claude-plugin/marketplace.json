@@ -6,32 +6,100 @@
   },
   "metadata": {
     "description": "Generic, reusable Claude Code skills and hooks for software development. Install each plugin separately.",
-    "version": "0.4.0"
+    "version": "0.5.0"
   },
   "plugins": [
     {
       "name": "handoff",
       "source": "./plugins/handoff",
-      "description": "Skill: hand work off to the next session with a minimal handoff file.",
-      "version": "0.4.0",
+      "description": "Skill: hand work off to the next Claude Code session with a minimal, non-redundant handoff file.",
+      "version": "0.5.0",
       "category": "workflow",
-      "keywords": ["skills", "workflow", "handoff", "context"]
+      "keywords": [
+        "skills",
+        "workflow",
+        "handoff",
+        "context"
+      ]
     },
     {
-      "name": "compact-check",
-      "source": "./plugins/compact-check",
-      "description": "Skill: decide whether this session can be /compacted safely.",
-      "version": "0.4.0",
+      "name": "compact",
+      "source": "./plugins/compact",
+      "description": "Skill and hooks: decide whether this session can be /compacted safely, re-orient Claude after compaction, and log compaction summaries.",
+      "version": "0.5.0",
       "category": "workflow",
-      "keywords": ["skills", "workflow", "compact", "context"]
+      "keywords": [
+        "skills",
+        "hooks",
+        "workflow",
+        "compact",
+        "context"
+      ]
     },
     {
-      "name": "compact-hooks",
-      "source": "./plugins/compact-hooks",
-      "description": "Hooks: re-orient Claude after compaction and log compaction summaries.",
-      "version": "0.4.0",
+      "name": "release",
+      "source": "./plugins/release",
+      "description": "Skill: cut a release with the version bumped consistently in every manifest, a changelog entry, verification, commit and tag.",
+      "version": "0.5.0",
       "category": "workflow",
-      "keywords": ["hooks", "compact", "context"]
+      "keywords": [
+        "skills",
+        "workflow",
+        "release",
+        "versioning"
+      ]
+    },
+    {
+      "name": "publish-check",
+      "source": "./plugins/publish-check",
+      "description": "Skill: scan what is about to be published for secrets, personal identifiers, machine paths and internal URLs.",
+      "version": "0.5.0",
+      "category": "workflow",
+      "keywords": [
+        "skills",
+        "security",
+        "privacy",
+        "publishing"
+      ]
+    },
+    {
+      "name": "context-audit",
+      "source": "./plugins/context-audit",
+      "description": "Skill: prune CLAUDE.md, AGENTS.md and auto memory of stale, duplicated and derivable entries.",
+      "version": "0.5.0",
+      "category": "workflow",
+      "keywords": [
+        "skills",
+        "workflow",
+        "memory",
+        "context"
+      ]
+    },
+    {
+      "name": "retro",
+      "source": "./plugins/retro",
+      "description": "Skill: turn a session's mistakes and corrections into durable rules, memories, skill fixes or automation.",
+      "version": "0.5.0",
+      "category": "workflow",
+      "keywords": [
+        "skills",
+        "workflow",
+        "retrospective",
+        "memory"
+      ]
+    },
+    {
+      "name": "plan-status",
+      "source": "./plugins/plan-status",
+      "description": "Skill: read-only report of where the work stands, checking the plan against git.",
+      "version": "0.5.0",
+      "category": "workflow",
+      "keywords": [
+        "skills",
+        "workflow",
+        "planning",
+        "status"
+      ]
     }
   ]
 }

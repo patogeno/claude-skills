@@ -40,8 +40,9 @@ Walk what you learned this session fact by fact against this table. Every fact g
 | Task completion status | plan / todo document: tick it off |
 | A decision and its rationale | spec, or the plan's decisions section |
 | A constraint discovered about the codebase | the document covering that area (create if missing) |
-| A repeatable command, convention, or standing user preference about this project | `CLAUDE.md` |
-| A fact about the user, or one that spans projects | auto memory |
+| A repeatable command, convention, or standing user preference about this project | `CLAUDE.md` (`CLAUDE.local.md` if personal and the repo is shared) |
+| A fact about the user or their context for this project | auto memory (stored per project) |
+| A preference for every project | user-level `CLAUDE.md` or settings; ask first |
 | An approach tried and abandoned, and why | focus line |
 | What is in progress, and the next action | focus line, as a pointer into the plan |
 | Environment state: branch, why work is uncommitted, running server | focus line |
@@ -110,7 +111,7 @@ GO. Flushed: ticked task 4 in docs/plan.md; DD/MM/YYYY dates and `pytest -q -x` 
 | "Files are on disk, so compacting is safe" | Files survive. Unanswered questions and half-finished stubs lose their context. NOT YET. |
 | "I'll mention the open question in the GO message" | An open question is a blocker, not a footnote. NOT YET. |
 | "I'll ask before ticking the plan" | Ticking a finished task is the flush. Do it. |
-| "I'll put it all in memory, that always reloads" | Memory holds facts about the user and preferences. Plan status goes in the plan. |
+| "I'll put it all in memory, that always reloads" | Memory holds facts about the user and their context. Plan status goes in the plan. |
 | "The summary will keep it" | You cannot know that. Write it down or put it in the focus line. |
 | "The context must be nearly full" | You do not know the window size: it may be 200k or 1M. Never estimate it or call the session "nearly full". The user decides when to compact; `/context` shows the real numbers. |
 

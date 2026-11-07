@@ -6,13 +6,17 @@ Everything here is project-agnostic: no absolute paths, no personal or company i
 
 ## Plugins
 
-Each skill and the hook set is its own plugin, so you install only what you want.
+Each plugin installs on its own, so you take only what you want.
 
-| Plugin | Type | Invoke | Purpose |
+| Plugin | Contains | Invoke | Purpose |
 |---|---|---|---|
 | `handoff` | skill | `/handoff` | Hand work off to the next Claude Code session with a minimal, non-redundant handoff file. |
-| `compact-check` | skill | `/compact-check` | Decide whether *this* session can be `/compact`ed safely, and get the `/compact` line to paste. |
-| `compact-hooks` | hooks | automatic | Re-orient Claude after any compaction and log each compaction summary. Works with or without `compact-check`. |
+| `compact` | skill + hooks | `/compact-check` | Decide whether *this* session can be `/compact`ed safely; hooks re-orient Claude after compaction and log each summary. |
+| `release` | skill | `/release` | Cut a release: the version bumped identically in every manifest, changelog, verification, commit, tag. |
+| `publish-check` | skill | `/publish-check` | Before anything goes public, scan it for secrets, personal identifiers, machine paths and internal URLs. |
+| `context-audit` | skill | `/context-audit` | Prune `CLAUDE.md`, `AGENTS.md` and auto memory of stale, duplicated and derivable entries. |
+| `retro` | skill | `/retro` | Turn a session's mistakes and corrections into rules, memories, skill fixes or automation. |
+| `plan-status` | skill | `/plan-status` | Read-only report of where the work stands, checking the plan against git. |
 
 ## Install
 
@@ -21,8 +25,12 @@ In Claude Code, add the marketplace once, then install any of the plugins:
 ```
 /plugin marketplace add patogeno/claude-skills
 /plugin install handoff@patogeno-claude-skills
-/plugin install compact-check@patogeno-claude-skills
-/plugin install compact-hooks@patogeno-claude-skills
+/plugin install compact@patogeno-claude-skills
+/plugin install release@patogeno-claude-skills
+/plugin install publish-check@patogeno-claude-skills
+/plugin install context-audit@patogeno-claude-skills
+/plugin install retro@patogeno-claude-skills
+/plugin install plan-status@patogeno-claude-skills
 ```
 
 Update later with:
@@ -33,14 +41,10 @@ Update later with:
 
 If a skill name clashes with another plugin, use the namespaced form, e.g. `/handoff:handoff`.
 
-### Upgrading from `dev-skills` (0.3.0 and earlier)
+### Upgrading from earlier versions
 
-The single `dev-skills` plugin was split into the three plugins above in 0.4.0. Remove it, then install the ones you want:
-
-```
-/plugin uninstall dev-skills@patogeno-claude-skills
-/plugin marketplace update patogeno-claude-skills
-```
+- **From `dev-skills` (0.3.0 and earlier):** that single plugin was split up in 0.4.0. Run `/plugin uninstall dev-skills@patogeno-claude-skills`, update the marketplace, then install the plugins you want.
+- **From `compact-check` or `compact-hooks` (0.4.0):** both were merged into `compact` in 0.5.0. Uninstall whichever you have, then install `compact@patogeno-claude-skills`.
 
 `dev-skills` 0.2.x also shipped a context-usage hook that assumed a 200k window and warned that 1M sessions were nearly full. It is gone; uninstalling `dev-skills` removes it.
 
@@ -64,7 +68,7 @@ One living file per topic, rewritten each session. Under 80 lines — if it grow
 Read docs/handoffs/handoff-auth-refactor.md and continue.
 ```
 
-## `compact-check`
+## `compact`
 
 For long sessions you want to keep going. `handoff` prepares a *new* session; `compact-check` answers "is it safe to `/compact` *this* one now?"
 
@@ -86,14 +90,34 @@ Claude cannot run `/compact` itself; you paste the line.
 
 The skill never guesses the context-window size (200k or 1M); it only judges whether compacting is safe. Use `/context` to see how full the session is.
 
-## `compact-hooks`
+### Bundled hooks
 
-Two hooks (`plugins/compact-hooks/hooks/hooks.json`, both run with `node`). They need no skill installed:
+The `compact` plugin also enables two hooks (`plugins/compact/hooks/hooks.json`, both run with `node`):
 
 | Event | What it does |
 |---|---|
 | `SessionStart` (`compact`) | After compaction, tells Claude to re-read `MEMORY.md`, run `git status`, and re-open any plan or handoff file the summary mentions. |
-| `PostCompact` | Appends each compaction summary, with a timestamp, to `claude-compact-hooks/compact-summaries.log` in the OS temp directory, so you can audit what was kept. |
+| `PostCompact` | Appends each compaction summary, with a timestamp, to `claude-compact/compact-summaries.log` in the OS temp directory, so you can audit what was kept. |
+
+## `release`
+
+`/release` (optionally with a version, e.g. `/release 2.0.0`). It finds every place the project declares its version, by searching for the old version string rather than trusting a list. It picks the next version by semantic versioning unless you name one, writes it everywhere, adds a changelog entry if the project keeps one, and runs the project's tests and validators. Then it commits and tags. It pushes only when you asked to release, deploy, publish or push.
+
+## `publish-check`
+
+`/publish-check` before a push to a public repo, a package publish, or making a repo public. It scans exactly what will become public, including the full history when a repo goes public, for secrets, personal identifiers, absolute machine paths, internal hosts and stray files. Your own identifiers come from a gitignored private terms file (e.g. `.git-private-terms`, one term per line); the skill offers to create one. The verdict is `CLEAN`, `BLOCKED` with file and line, or `INCOMPLETE` naming what was not scanned. It never repeats a secret's value. It changes nothing itself and leaves history rewrites to you.
+
+## `context-audit`
+
+`/context-audit` when `CLAUDE.md` or memory has grown long or stale. It checks every entry against the repository and proposes removals, fixes and moves for anything stale, duplicated, derivable from the code, or filed in the wrong place. It shows the line counts before and after, and applies changes only after you approve them.
+
+## `retro`
+
+`/retro` at the end of a task, or after a session went badly. It lists what cost time (your corrections, abandoned approaches, wrong assumptions) and traces each problem to a cause. It then writes the fix where it will prevent a repeat: a `CLAUDE.md` rule, a feedback memory, a skill edit, or a hook or test when the check is mechanical.
+
+## `plan-status`
+
+`/plan-status` when you come back to a project. It reads the plan, any handoff file and git (branch, uncommitted work, unmerged branches, stashes) and reports what is done, in progress and next. It also flags tasks that look done but aren't ticked, and ticked tasks with no evidence. It is read-only.
 
 ## Conventions for skills in this repo
 
@@ -111,7 +135,7 @@ The repo is public and its skills must work unmodified in anyone's project. Ever
 .claude-plugin/marketplace.json           lists every plugin below
 plugins/<plugin>/.claude-plugin/plugin.json   one manifest per plugin (own version)
 plugins/<plugin>/skills/<name>/SKILL.md       a skill plugin
-plugins/<plugin>/hooks/hooks.json             a hook plugin
+plugins/<plugin>/hooks/hooks.json             hooks shipped with a plugin
 docs/superpowers/                         design specs and implementation plans
 ```
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Hook handlers for the compact-hooks plugin. One script, one subcommand per hook event:
+// Hook handlers for the compact plugin. One script, one subcommand per hook event:
 //   post-compact  SessionStart(compact): tell Claude to re-read state
 //   log-summary   PostCompact: append compact_summary to a log in the temp directory
 // Every handler fails silently: a broken hook must never block the session.
@@ -9,7 +9,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const STATE_DIR = path.join(os.tmpdir(), 'claude-compact-hooks');
+const STATE_DIR = path.join(os.tmpdir(), 'claude-compact');
 
 // Hard stop so a slow disk or a stuck stdin can never hold up the session.
 setTimeout(() => process.exit(0), 3000).unref();

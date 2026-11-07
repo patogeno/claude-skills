@@ -45,7 +45,8 @@ Walk what you learned this session fact by fact against this table. Every fact g
 | A constraint discovered about the codebase | the document covering that area (create if missing) |
 | A repeatable command or setup step | `CLAUDE.md` or README |
 | A project convention | `CLAUDE.md` |
-| A standing user preference | `CLAUDE.md` |
+| A standing user preference about this project | `CLAUDE.md` (`CLAUDE.local.md` if personal and the repo is shared) |
+| A fact about the user or their context for this project | auto memory (stored per project) |
 | An approach tried and abandoned, and why it failed | handoff |
 | Environment state — branch, uncommitted work, running server, seeded data | handoff |
 | What to do next, and in what order | handoff, as a pointer into the plan |

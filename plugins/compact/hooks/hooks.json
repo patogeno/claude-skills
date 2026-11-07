@@ -1,5 +1,5 @@
 {
-  "description": "compact-hooks: restore orientation after compaction, log compaction summaries.",
+  "description": "compact: restore orientation after compaction, log compaction summaries.",
   "hooks": {
     "SessionStart": [
       {

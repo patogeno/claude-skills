@@ -1,0 +1,18 @@
+{
+  "name": "publish-check",
+  "description": "Skill: scan what is about to be published for secrets, personal identifiers, machine paths and internal URLs.",
+  "version": "0.5.0",
+  "author": {
+    "name": "patogeno",
+    "url": "https://github.com/patogeno"
+  },
+  "homepage": "https://github.com/patogeno/claude-skills",
+  "repository": "https://github.com/patogeno/claude-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "security",
+    "privacy",
+    "publishing"
+  ]
+}

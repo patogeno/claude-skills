@@ -1,7 +1,7 @@
 {
-  "name": "compact-check",
-  "description": "Decide whether the current session can be /compacted safely, and get the /compact line to paste.",
-  "version": "0.4.0",
+  "name": "plan-status",
+  "description": "Skill: read-only report of where the work stands, checking the plan against git.",
+  "version": "0.5.0",
   "author": {
     "name": "patogeno",
     "url": "https://github.com/patogeno"
@@ -9,5 +9,10 @@
   "homepage": "https://github.com/patogeno/claude-skills",
   "repository": "https://github.com/patogeno/claude-skills",
   "license": "MIT",
-  "keywords": ["skills", "workflow", "compact", "context"]
+  "keywords": [
+    "skills",
+    "workflow",
+    "planning",
+    "status"
+  ]
 }
