@@ -1,16 +1,28 @@
 # claude-skills
 
-Generic, reusable [Claude Code](https://claude.com/claude-code) skills for software development.
+Generic, reusable [Claude Code](https://claude.com/claude-code) skills and hooks for software development.
 
-Every skill here is project-agnostic: no absolute paths, no personal or company identifiers, no assumptions about your stack or directory layout. Install once, use in any project.
+Everything here is project-agnostic: no absolute paths, no personal or company identifiers, no assumptions about your stack or directory layout. Install once, use in any project.
+
+## Plugins
+
+Each skill and the hook set is its own plugin, so you install only what you want.
+
+| Plugin | Type | Invoke | Purpose |
+|---|---|---|---|
+| `handoff` | skill | `/handoff` | Hand work off to the next Claude Code session with a minimal, non-redundant handoff file. |
+| `compact-check` | skill | `/compact-check` | Decide whether *this* session can be `/compact`ed safely, and get the `/compact` line to paste. |
+| `compact-hooks` | hooks | automatic | Re-orient Claude after any compaction and log each compaction summary. Works with or without `compact-check`. |
 
 ## Install
 
-In Claude Code:
+In Claude Code, add the marketplace once, then install any of the plugins:
 
 ```
 /plugin marketplace add patogeno/claude-skills
-/plugin install dev-skills@patogeno-claude-skills
+/plugin install handoff@patogeno-claude-skills
+/plugin install compact-check@patogeno-claude-skills
+/plugin install compact-hooks@patogeno-claude-skills
 ```
 
 Update later with:
@@ -19,12 +31,18 @@ Update later with:
 /plugin marketplace update patogeno-claude-skills
 ```
 
-## Skills
+If a skill name clashes with another plugin, use the namespaced form, e.g. `/handoff:handoff`.
 
-| Skill | Invoke | Purpose |
-|---|---|---|
-| `handoff` | `/handoff` | Hand work off to the next Claude Code session with a minimal, non-redundant handoff file. |
-| `compact-check` | `/compact-check` | Decide whether *this* session can be `/compact`ed safely, and get the `/compact` line to paste. |
+### Upgrading from `dev-skills` (0.3.0 and earlier)
+
+The single `dev-skills` plugin was split into the three plugins above in 0.4.0. Remove it, then install the ones you want:
+
+```
+/plugin uninstall dev-skills@patogeno-claude-skills
+/plugin marketplace update patogeno-claude-skills
+```
+
+`dev-skills` 0.2.x also shipped a context-usage hook that assumed a 200k window and warned that 1M sessions were nearly full. It is gone; uninstalling `dev-skills` removes it.
 
 ## `handoff`
 
@@ -66,14 +84,16 @@ For long sessions you want to keep going. `handoff` prepares a *new* session; `c
 
 Claude cannot run `/compact` itself; you paste the line.
 
-### Bundled hooks
+The skill never guesses the context-window size (200k or 1M); it only judges whether compacting is safe. Use `/context` to see how full the session is.
 
-Installing the plugin also enables two hooks (`hooks/hooks.json`, both run with `node`):
+## `compact-hooks`
+
+Two hooks (`plugins/compact-hooks/hooks/hooks.json`, both run with `node`). They need no skill installed:
 
 | Event | What it does |
 |---|---|
 | `SessionStart` (`compact`) | After compaction, tells Claude to re-read `MEMORY.md`, run `git status`, and re-open any plan or handoff file the summary mentions. |
-| `PostCompact` | Appends each compaction summary, with a timestamp, to `claude-compact-check/compact-summaries.log` in the OS temp directory, so you can audit what was kept. |
+| `PostCompact` | Appends each compaction summary, with a timestamp, to `claude-compact-hooks/compact-summaries.log` in the OS temp directory, so you can audit what was kept. |
 
 ## Conventions for skills in this repo
 
@@ -88,9 +108,11 @@ The repo is public and its skills must work unmodified in anyone's project. Ever
 ## Repo layout
 
 ```
-.claude-plugin/     plugin + marketplace manifests
-skills/<name>/      one SKILL.md per skill
-docs/superpowers/   design specs and implementation plans for these skills
+.claude-plugin/marketplace.json           lists every plugin below
+plugins/<plugin>/.claude-plugin/plugin.json   one manifest per plugin (own version)
+plugins/<plugin>/skills/<name>/SKILL.md       a skill plugin
+plugins/<plugin>/hooks/hooks.json             a hook plugin
+docs/superpowers/                         design specs and implementation plans
 ```
 
 ## License

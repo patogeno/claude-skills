@@ -112,7 +112,10 @@ GO. Flushed: ticked task 4 in docs/plan.md; DD/MM/YYYY dates and `pytest -q -x` 
 | "I'll ask before ticking the plan" | Ticking a finished task is the flush. Do it. |
 | "I'll put it all in memory, that always reloads" | Memory holds facts about the user and preferences. Plan status goes in the plan. |
 | "The summary will keep it" | You cannot know that. Write it down or put it in the focus line. |
+| "The context must be nearly full" | You do not know the window size: it may be 200k or 1M. Never estimate it or call the session "nearly full". The user decides when to compact; `/context` shows the real numbers. |
 
 ## Never
+
+Never judge whether to compact from a guessed context-window size. This skill answers whether compacting is *safe*, not whether it is *needed*.
 
 Never copy credentials, tokens, API keys, or connection strings into a document, memory file, or focus line. Reference where the secret lives.

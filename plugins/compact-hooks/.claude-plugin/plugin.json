@@ -1,0 +1,13 @@
+{
+  "name": "compact-hooks",
+  "description": "Hooks that restore orientation after compaction and log each compaction summary.",
+  "version": "0.4.0",
+  "author": {
+    "name": "patogeno",
+    "url": "https://github.com/patogeno"
+  },
+  "homepage": "https://github.com/patogeno/claude-skills",
+  "repository": "https://github.com/patogeno/claude-skills",
+  "license": "MIT",
+  "keywords": ["hooks", "compact", "context"]
+}

@@ -5,16 +5,33 @@
     "url": "https://github.com/patogeno"
   },
   "metadata": {
-    "description": "Generic, reusable Claude Code skills for software development.",
-    "version": "0.3.0"
+    "description": "Generic, reusable Claude Code skills and hooks for software development. Install each plugin separately.",
+    "version": "0.4.0"
   },
   "plugins": [
     {
-      "name": "dev-skills",
-      "source": "./",
-      "description": "Project-agnostic Claude Code skills for development workflows. Includes: handoff, compact-check.",
+      "name": "handoff",
+      "source": "./plugins/handoff",
+      "description": "Skill: hand work off to the next session with a minimal handoff file.",
+      "version": "0.4.0",
       "category": "workflow",
-      "keywords": ["skills", "workflow", "handoff", "compact", "context"]
+      "keywords": ["skills", "workflow", "handoff", "context"]
+    },
+    {
+      "name": "compact-check",
+      "source": "./plugins/compact-check",
+      "description": "Skill: decide whether this session can be /compacted safely.",
+      "version": "0.4.0",
+      "category": "workflow",
+      "keywords": ["skills", "workflow", "compact", "context"]
+    },
+    {
+      "name": "compact-hooks",
+      "source": "./plugins/compact-hooks",
+      "description": "Hooks: re-orient Claude after compaction and log compaction summaries.",
+      "version": "0.4.0",
+      "category": "workflow",
+      "keywords": ["hooks", "compact", "context"]
     }
   ]
 }

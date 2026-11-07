@@ -1,5 +1,5 @@
 {
-  "description": "compact-check: restore orientation after compaction, log compaction summaries.",
+  "description": "compact-hooks: restore orientation after compaction, log compaction summaries.",
   "hooks": {
     "SessionStart": [
       {
@@ -8,7 +8,7 @@
           {
             "type": "command",
             "command": "node",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/compact-check.js", "post-compact"],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/compact-hooks.js", "post-compact"],
             "timeout": 5
           }
         ]
@@ -20,7 +20,7 @@
           {
             "type": "command",
             "command": "node",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/compact-check.js", "log-summary"],
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/compact-hooks.js", "log-summary"],
             "timeout": 5
           }
         ]
